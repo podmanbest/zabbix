@@ -1,9 +1,0 @@
-FROM docker.io/library/alpine:3.16
-LABEL Maintainer="Asep Ready <asepready@gmail.com>" 
-LABEL Description="NGINX container based on Alpine Linux"
-RUN apk add --update nginx && \
-  rm -rf /var/cache/apk/*
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
