@@ -1,0 +1,9 @@
+# Use a Alpine base image
+FROM docker.io/library/alpine:3.16
+
+LABEL Maintainer="Asep Ready <asepready@gmail.com>" \
+    Description="PHP-FPM v8 container based on Alpine Linux"
+    
+RUN apk update --no-cache 
+RUN apk --no-cache add php8 php8-fpm php8-opcache php8-openssl php8-curl
+
