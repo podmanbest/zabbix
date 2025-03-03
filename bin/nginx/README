@@ -1,0 +1,8 @@
+# Build Image
+podman build -t nginx:alpine .
+
+# Run container by Image
+podman run -d -p 8080:80 --name webserver localhost/nginx:alpine
+
+# Console Container
+podman exec -ti webserver /bin/sh

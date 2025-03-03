@@ -7,19 +7,17 @@ LABEL Description="NGINX container based on Alpine Linux"
 RUN apk add --update nginx && \
   rm -rf /var/cache/apk/*
 
-# Copy custom Nginx configuration
-#COPY nginx.conf /etc/nginx/nginx.conf
+# Menyalin file konfigurasi kustom ke dalam container
+COPY nginx.conf /etc/nginx/
+COPY http.d /etc/nginx/
 
-# Copy SSL certificates (if needed)
-COPY server.crt /etc/ssl/certs/server.crt
-COPY server.key /etc/ssl/private/server.key
+# Menyalin file statis (HTML) ke direktori root Nginx
+COPY html /var/www/
 
-# Set permissions
-RUN chown -R nginx:nginx /usr/share/nginx/html && \
-    chmod -R 755 /usr/share/nginx/html
+# Menyalin sertifikat SSL
+COPY ssl /etc/nginx/
 
-# Expose ports
-EXPOSE 80
-EXPOSE 443
+# Ekspos port 80 (HTTP) dan 443 (HTTPS)
+EXPOSE 80 443
 
 CMD ["nginx", "-g", "daemon off;"]
