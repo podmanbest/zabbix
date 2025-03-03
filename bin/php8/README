@@ -1,0 +1,8 @@
+# Build Image
+podman build -t php8:alpine .
+
+# Run container by Image
+podman run -d --name webserver localhost/php8:alpine
+
+# Console Container
+podman exec -ti webserver /bin/sh
