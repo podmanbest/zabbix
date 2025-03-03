@@ -9,13 +9,13 @@ RUN apk add --update nginx && \
 
 # Menyalin file konfigurasi kustom ke dalam container
 COPY ./nginx.conf /etc/nginx/
-COPY ./http.d /etc/nginx/
+COPY ./http.d /etc/nginx/http.d
 
 # Menyalin sertifikat SSL
-COPY ./ssl /etc/nginx/
+COPY ./ssl /etc/nginx/ssl
 
 # Menyalin file statis (HTML) ke direktori root Nginx
-COPY ./html /var/www/
+COPY ./html /var/www/html
 
 # Ekspos port 80 (HTTP) dan 443 (HTTPS)
 EXPOSE 80
