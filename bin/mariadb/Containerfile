@@ -8,7 +8,8 @@ LABEL Maintainer="Asep Ready <asepready@gmail.com>" \
 RUN echo "Asia/Jakarta" > /etc/timezone
 
 # Install PHP
-RUN apk add --update mariadb && \
+RUN apk add --update mariadb \
+  mariadb-client mariadb-server-utils && \
   rm -rf /var/cache/apk/*
 
 # Set environment variables for MariaDB configuration
