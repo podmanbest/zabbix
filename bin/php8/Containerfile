@@ -2,8 +2,35 @@
 FROM docker.io/library/alpine:3.16
 
 LABEL Maintainer="Asep Ready <asepready@gmail.com>" \
-    Description="PHP-FPM v8 container based on Alpine Linux"
-    
-RUN apk update --no-cache 
-RUN apk --no-cache add php8 php8-fpm php8-opcache php8-openssl php8-curl
+  Description="PHP-FPM v8 container based on Alpine Linux"
 
+# Timezone
+RUN echo "Asia/Jakarta" > /etc/timezone
+
+# Install PHP
+RUN apk add --update php8-fpm \
+  php8-pdo \
+  php8-opcache \
+  php8-zip \
+  php8-phar \
+  php8-iconv \
+  php8-cli \
+  php8-curl \
+  php8-openssl \
+  php8-mbstring \
+  php8-tokenizer \
+  php8-fileinfo \
+  php8-json \
+  php8-xml \
+  php8-xmlwriter \
+  php8-simplexml \
+  php8-dom \
+  php8-pdo_mysql \
+  php8-pdo_sqlite \
+  php8-tokenizer \
+  php8-pecl-redis && \
+  rm -rf /var/cache/apk/*
+
+COPY php-fpm.d/www.conf /etc/php8/php-fpm.d/www.conf
+
+CMD ["php-fpm8", "-g", "daemon off;"]
