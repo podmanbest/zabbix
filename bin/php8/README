@@ -2,7 +2,7 @@
 podman build -t php8:alpine .
 
 # Run container by Image
-podman run -d --name webserver localhost/php8:alpine
+podman run -d -p 9000:9000 --name lang-php8 localhost/php8:alpine
 
 # Console Container
 podman exec -ti webserver /bin/sh
