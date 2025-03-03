@@ -4,5 +4,12 @@ podman build -t php8:alpine .
 # Run container by Image
 podman run -d -p 9000:9000 --name lang-php8 localhost/php8:alpine
 
+
+podman run -d \
+  --pod lamp-pod \
+  --name php-fpm \
+  -v app-data:/var/www/html \
+  docker.io/library/php:8.2-fpm-alpine
+
 # Console Container
 podman exec -ti webserver /bin/sh
