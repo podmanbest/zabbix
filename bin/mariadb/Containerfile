@@ -12,11 +12,14 @@ RUN apk add --update mariadb \
   mariadb-client mariadb-server-utils && \
   rm -rf /var/cache/apk/*
 
-# Set environment variables for MariaDB configuration
-ENV MYSQL_ROOT_PASSWORD=my-secret-pw \
-  MYSQL_DATABASE=my_database \
-  MYSQL_USER=my_user \
-  MYSQL_PASSWORD=my_password
+# Set up MariaDB directories and permissions
+RUN mkdir -p /run/mysqld && chown -R mysql:mysql /var/lib/mysql /run/mysqld
+
+# Set environment variables for MariaDB (optional)
+ENV MYSQL_ROOT_PASSWORD=root \
+    MYSQL_DATABASE=mydb \
+    MYSQL_USER=myuser \
+    MYSQL_PASSWORD=mypassword
 
 # Copy Configure 
 COPY my.cnf.d/mariadb-server.cnf /etc/my.cnf.d/mariadb-server.cnf
@@ -24,5 +27,5 @@ COPY my.cnf.d/mariadb-server.cnf /etc/my.cnf.d/mariadb-server.cnf
 # Expose the default MariaDB port
 EXPOSE 3306
 
-# Start MariaDB service
-CMD ["mysqld", "-g", "daemon off;"]
+# Command to run the MariaDB server
+CMD ["mysqld", "--datadir=/var/lib/mysql", "--user=mysql"]
