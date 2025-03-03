@@ -1,5 +1,6 @@
 # Use a Alpine Linux base image
 FROM docker.io/library/alpine:3.16
+
 LABEL Maintainer="Asep Ready <asepready@gmail.com>" 
 LABEL Description="NGINX container based on Alpine Linux"
 

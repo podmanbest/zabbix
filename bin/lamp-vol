@@ -1,0 +1,2 @@
+podman volume create app-data
+podman volume create db-data
