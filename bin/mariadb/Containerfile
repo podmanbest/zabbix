@@ -13,7 +13,8 @@ RUN apk add --update mariadb \
   rm -rf /var/cache/apk/*
 
 # Set up MariaDB directories and permissions
-RUN mkdir -p /run/mysqld && chown -R mysql:mysql /var/lib/mysql /run/mysqld
+#RUN mkdir -p /run/mysqld && chown -R mysql:mysql /var/lib/mysql /run/mysqld
+RUN mysql_install_db --user=mysql --datadir=/var/lib/mysql
 
 # Set environment variables for MariaDB (optional)
 ENV MYSQL_ROOT_PASSWORD=root \
