@@ -2,7 +2,7 @@
 podman build -t nginx:alpine .
 
 # Run container by Image
-podman run -d -p 8080:80 --name webserver localhost/nginx:alpine
+podman run -d -p 8080:80 -p 8443:443 --name webserver localhost/nginx:alpine
 
 # Console Container
 podman exec -ti webserver /bin/sh
