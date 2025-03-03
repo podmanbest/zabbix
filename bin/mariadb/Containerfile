@@ -1,0 +1,27 @@
+# Use a Alpine base image
+FROM docker.io/library/alpine:3.16
+
+LABEL Maintainer="Asep Ready <asepready@gmail.com>" \
+  Description="MariaDB container based on Alpine Linux"
+
+# Timezone
+RUN echo "Asia/Jakarta" > /etc/timezone
+
+# Install PHP
+RUN apk add --update mariadb && \
+  rm -rf /var/cache/apk/*
+
+# Set environment variables for MariaDB configuration
+ENV MYSQL_ROOT_PASSWORD=my-secret-pw \
+  MYSQL_DATABASE=my_database \
+  MYSQL_USER=my_user \
+  MYSQL_PASSWORD=my_password
+
+# Copy Configure 
+COPY my.cnf.d/mariadb-server.cnf /etc/my.cnf.d/mariadb-server.cnf
+
+# Expose the default MariaDB port
+EXPOSE 3306
+
+# Start MariaDB service
+CMD ["mysqld", "-g", "daemon off;"]

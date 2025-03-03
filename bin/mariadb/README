@@ -1,0 +1,11 @@
+# Build Image
+podman build -t mariadb:alpine .
+
+# Run container by Image
+podman run --name mariadb-container \
+  -p 3306:3306 \
+  -v $(pwd)/data:/var/lib/mysql \
+  -d mariadb:alpine
+
+# Console Container
+podman exec -ti mariadb:alpine /bin/sh
