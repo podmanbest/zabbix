@@ -1,0 +1,37 @@
+version: '3.7'
+
+services:
+  php-nginx:
+    image: nginx:alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./www:/usr/share/nginx/html
+    depends_on:
+      - php-fpm
+    
+    php-fpm:
+      image: php:8.2-fpm-alpine
+      volumes:
+        - ./www:/usr/share/nginx/html
+
+  mariadb:
+    image: mariadb:10.6.8
+    volumes:
+      - vol-mariadb:/var/lib/mysql
+    environment:
+    image: bitnami/phpmyadmin:latest
+      MYSQL_ROOT_PASSWORD: "secret"
+      MYSQL_USER: "myuser"
+      MYSQL_PASSWORD: "mypass"
+      MYSQL_DATABASE: "mydb"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - mariadb
+    ports:
+      - 8181:80
+
+volumes:
+  vol-mariadb:	
