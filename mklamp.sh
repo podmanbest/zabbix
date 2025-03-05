@@ -13,28 +13,32 @@ echo -e "\nBuilding phpmyadmin image"
 id=$(buildah from --pull docker.io/phpmyadmin:latest)
 buildah commit $id php-pma
 
+podman pod create --name pod-lamp -p 8000:80 && podman pod start pod-lamp
+podman network create lamp-net
+podman volume create mysqldb
+podman volume create src
+
 podman run \
     --detach \
-    --pod php-lamp \
+    --pod pod-lamp \
     --publish 8000:80 \
-    --publish 8080:3306 \
     --name php-dev \
-    --security-opt label=disable \
-    --volume ./src:/var/www/html \
+    --volume src:/var/www/html \
     php-apache
 
 podman run \
     --detach \
-    --pod php-lamp \
+    --pod pod-lamp \
     --name mysql-dev \
     --env MYSQL_ROOT_PASSWORD=dev \
     --security-opt label=disable \
-    --volume /home/barpasc/dev-web1/mysqldb:/var/lib/mysql:Z \
+    --volume mysqldb:/var/lib/mysql \
+    --network lamp-net \
     --restart on-failure \
     php-mysql
 
 podman run \
-    --pod php-lamp \
+    --pod pod-lamp \
     --name pma \
     --security-opt label=disable \
     -e PMA_HOST=127.0.0.1 \
