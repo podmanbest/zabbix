@@ -10,7 +10,7 @@ id=$(buildah from --pull docker.io/mysql:8)
 buildah commit $id php-mysql
 
 echo -e "\nBuilding phpmyadmin image"
-id=$(buildah from --pull docker.io/phpmyadmin:latest)
+id=$(buildah from --pull docker.io/library/phpmyadmin)
 buildah commit $id php-pma
 
 podman pod create --name pod-lamp -p 8000:80 && podman pod start pod-lamp
