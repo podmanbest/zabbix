@@ -1,47 +1,29 @@
-# Use an Alpine base image
+# Use the official Alpine Linux image as a base
 FROM alpine:3.16
 
 LABEL maintainer="Asep Ready <asepready@gmail.com>" \
   description="PHP-FPM v8 container based on Alpine Linux"
 
-# Set timezone as an environment variable
-ENV TZ=Asia/Jakarta
+# Install PHP 8.0 and PHP-FPM along with commonly used extensions
+RUN apk update && apk add --no-cache \
+  php8 \
+  php8-fpm \
+  php8-mysqli \
+  php8-pdo_mysql \
+  php8-json \
+  php8-curl \
+  php8-mbstring \
+  php8-xml \
+  php8-gd \
+  php8-zip \
+  php8-opcache \
+  php8-intl \
+  php8-soap \
+  php8-bcmath \
+  php8-redis \
+  && rm -rf /var/cache/apk/*
 
-# Install necessary packages and PHP extensions
-RUN apk update && \
-    apk add --no-cache \
-    tzdata \
-    php8 \
-    php8-fpm \
-    php8-mysqli \
-    php8-json \
-    php8-session \
-    php8-opcache \
-    php8-pdo \
-    php8-pdo_mysql \
-    php8-mbstring \
-    php8-tokenizer \
-    php8-xml \
-    php8-ctype \
-    php8-curl \
-    php8-dom \
-    php8-fileinfo \
-    php8-gd \
-    php8-iconv \
-    php8-intl \
-    php8-pecl-apcu \
-    php8-pecl-redis \
-    php8-simplexml \
-    php8-soap \
-    php8-xmlreader \
-    php8-xmlwriter \
-    php8-zip \
-    php8-zlib && \
-    cp /usr/share/zoneinfo/$TZ /etc/localtime && \
-    echo $TZ > /etc/timezone && \
-    rm -rf /var/cache/apk/*
-
-# Copy custom PHP-FPM configuration
+# Configure PHP-FPM to listen on port 9000
 COPY php-fpm.d/www.conf /etc/php8/php-fpm.d/www.conf
 
 # Expose port 9000
