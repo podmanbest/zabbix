@@ -1,48 +1,50 @@
 version: '3.7'
 
 volumes:
-  mariadb-data:
-  mariadb-data-backups:
-  src:
+  data:
 
 networks:
   nets:
     driver: bridge
 
 services:
-  nginx:
+  webserver:
     image: nginx:alpine
     ports:
       - "8080:80"
     networks:
       - nets
     volumes:
-      - src:/usr/share/nginx/html
+      - ./www:/usr/share/nginx/html
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
-      - php-fpm
-
-  php-fpm:
+      - language
+      - mariadb
+    environment:
+      NGINX_HOST: localhost
+      NGINX_PORT: 8080
+      
+  language:
     image: php:8.2-fpm-alpine
     networks:
       - nets
     volumes:
-      - src:/usr/share/nginx/html
-      - ./www:/usr/share/nginx/html
+      - ./www/:/usr/share/nginx/html
+    environment:
+      PHP_FPM_LISTEN: "9000"
 
   mariadb:
     image: mariadb:10.6.8
     networks:
       - nets
     volumes:
-      - mariadb-data:/var/lib/mysql
-      - mariadb-data-backups:/var/lib/mysql-backups
-      - ./database-backups://var/lib/mysql
+      - data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: "secret"
       MYSQL_USER: "myuser"
       MYSQL_PASSWORD: "mypass"
       MYSQL_DATABASE: "mydb"
+    command: --backup --backup-name=db-backups
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
