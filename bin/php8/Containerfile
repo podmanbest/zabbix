@@ -1,20 +1,51 @@
-# Use a Alpine base image
-FROM docker.io/library/alpine:3.16
+# Use an Alpine base image
+FROM alpine:3.16
 
-LABEL Maintainer="Asep Ready <asepready@gmail.com>" \
-  Description="PHP-FPM v8 container based on Alpine Linux"
+LABEL maintainer="Asep Ready <asepready@gmail.com>" \
+  description="PHP-FPM v8 container based on Alpine Linux"
 
-# Timezone
-RUN echo "Asia/Jakarta" > /etc/timezone
+# Set timezone as an environment variable
+ENV TZ=Asia/Jakarta
 
-# Install PHP and required extensions
-RUN apk add --update php8 php8-fpm php8-mysqli php8-json php8-session && \
-  rm -rf /var/cache/apk/*
+# Install necessary packages and PHP extensions
+RUN apk update && \
+    apk add --no-cache \
+    tzdata \
+    php8 \
+    php8-fpm \
+    php8-mysqli \
+    php8-json \
+    php8-session \
+    php8-opcache \
+    php8-pdo \
+    php8-pdo_mysql \
+    php8-mbstring \
+    php8-tokenizer \
+    php8-xml \
+    php8-ctype \
+    php8-curl \
+    php8-dom \
+    php8-fileinfo \
+    php8-gd \
+    php8-iconv \
+    php8-intl \
+    php8-pecl-apcu \
+    php8-pecl-redis \
+    php8-simplexml \
+    php8-soap \
+    php8-xmlreader \
+    php8-xmlwriter \
+    php8-zip \
+    php8-zlib && \
+    cp /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone && \
+    rm -rf /var/cache/apk/*
 
+# Copy custom PHP-FPM configuration
 COPY php-fpm.d/www.conf /etc/php8/php-fpm.d/www.conf
 
-# Expose port
+# Expose port 9000
 EXPOSE 9000
 
 # Start PHP-FPM
-CMD ["php-fpm81", "-F"]
+CMD ["php-fpm8", "-F"]
