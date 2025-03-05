@@ -13,6 +13,9 @@ RUN apk add --no-cache tzdata && \
 # Install MariaDB
 RUN apk add --no-cache mariadb mariadb-client mariadb-server-utils
 
+# Copy initialization script
+COPY my_init.sql /docker-entrypoint-initdb.d/
+
 # Copy configuration file
 COPY my.cnf.d/mariadb-server.cnf /etc/my.cnf.d/mariadb-server.cnf
 
@@ -20,4 +23,4 @@ COPY my.cnf.d/mariadb-server.cnf /etc/my.cnf.d/mariadb-server.cnf
 EXPOSE 3306
 
 # Command to run the MariaDB server
-CMD ["mysqld", "--user=mysql", "--datadir=/var/lib/mysql"]
+CMD ["mysqld", "--user=mysql", "--datadir=/var/lib/mysql", "--init-file=/docker-entrypoint-initdb.d/my_init.sql"]
