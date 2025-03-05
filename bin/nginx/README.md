@@ -1,3 +1,4 @@
+```sh
 # Build Image
 podman build -t nginx:v3.16 .
 
