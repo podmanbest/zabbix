@@ -1,23 +1,18 @@
-# Use a Alpine Linux base image
-FROM docker.io/library/alpine:3.16
-
-LABEL Maintainer="Asep Ready <asepready@gmail.com>" 
-LABEL Description="NGINX container based on Alpine Linux"
+# Use a specific version of the official Alpine Linux image as the base image
+FROM alpine:3.14
 
 # Install Nginx
-RUN apk add --update nginx && \
-  rm -rf /var/cache/apk/*
+RUN apk add --no-cache nginx
 
-RUN  mkdir /var/www/html/
+# Copy the Nginx configuration file
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Menyalin file konfigurasi kustom ke dalam container
-COPY nginx.conf /etc/nginx/
-COPY http.d/default.conf /etc/nginx/http.d/
+# Expose port 80
+EXPOSE 80
 
-# Menyalin file statis (HTML) ke direktori root Nginx
-COPY ./html/* /var/www/html/
+# Add a health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD wget -q --spider http://localhost:80 || exit 1
 
-# Ekspos port 80 (HTTP) dan 443 (HTTPS)
-EXPOSE 80 443
-
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
