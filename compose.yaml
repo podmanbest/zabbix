@@ -1,68 +1,49 @@
-version: "3"
-
+version: '3'
 services:
-  nginx:
-    image: docker.io/nginx:alpine
-    ports:
-      # If you want to change the used port, modify the first one
-      # If you want to connect from other devices on the same network, remove the two 127.0.0.1:
-      - 127.0.0.1:8000:8000 # Nginx+Php server
-      - 127.0.0.1:8080:8080 # Phpmyadmin
-    volumes:
-      - ./app:/var/www/html:rw
-      - ./config/nginx:/etc/nginx/conf.d:rw
-      - ./log/nginx:/var/log/nginx
-      - phpmyadmindata:/var/www/phpmyadmin:rw
-    restart: always
 
   php:
     build:
       context: .
-      dockerfile: php-dockerfile # PHP FPM
-    working_dir: /var/www/html
-    volumes:
-      - ./app:/var/www/html:rw
-      - ./config/php/php.ini:/usr/local/etc/php/php.ini:rw
-    depends_on:
-      - nginx
-      - mariadb
-    restart: always
+      dockerfile: build/php.Dockerfile
+    networks:
+      - lamp-network
 
-  mariadb:
-    # Use this image instead of the official one
-    #image: monstrenyatko/rpi-mariadb # RPI image
-    image: docker.io/mariadb # Official image
-    volumes:
-      - mariadbdata:/var/lib/mysql:rw
-      - ./log/mariadb:/var/log/mariadb
-    environment:
-      MARIADB_ROOT_PASSWORD: root
-      # MARIADB_USER: user
-      # MARIADB_PASSWORD: password
-    restart: always
+#  nginx:
+#    build:
+#      context: .
+#      dockerfile: build/nginx.Dockerfile
+#    ports:
+#      - "8080:80"
+#    volumes:
+#      - ./html:/var/www/html
+#    networks:
+#      - lamp-network
 
-  phpmyadmin:
-    image: docker.io/phpmyadmin:fpm-alpine
-    volumes:
-      - phpmyadmindata:/var/www/html:rw
-    environment:
-      PMA_HOST: mariadb
-      PMA_USER: root
-      PMA_PASSWORD: root
-      #PMA_USER: user
-      #PMA_PASSWORD: password
-    depends_on:
-      - mariadb
-    restart: always
+#  mariadb:
+#    build:
+#      context: .
+#      dockerfile: build/mariadb.Dockerfile
+#    environment:
+#      MYSQL_ROOT_PASSWORD: mysecret
+#    volumes:
+#      - mariadb_data:/var/lib/mysql
+#    networks:
+#      - lamp-network
 
-  node:
-    image: docker.io/node:alpine
-    working_dir: /var/node/app
-    volumes:
-      - ./app:/var/node/app
-    #command: sh -c "npm install && tail -f /dev/null"
-    restart: always
+#  phpmyadmin:
+#    build:
+#      context: .
+#      dockerfile: build/phpmyadmin.Dockerfile
+#    ports:
+#      - "8181:8080"
+#    environment:
+#      PMA_HOST: mariadb
+#    networks:
+#      - lamp-network
+
+networks:
+  lamp-network:
+    driver: bridge
 
 volumes:
-  mariadbdata:
-  phpmyadmindata:
+  mariadb_data:
